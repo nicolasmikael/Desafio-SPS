@@ -228,6 +228,10 @@ test-sps-server/
 │   ├── controllers/
 │   │   ├── authController.js      # Controlador de autenticação
 │   │   └── userController.js      # Controlador de usuários
+│   ├── services/
+│   │   ├── index.js               # Ponto de entrada para serviços
+│   │   ├── userService.js         # Serviço de gerenciamento de usuários
+│   │   └── authService.js         # Serviço de autenticação
 │   ├── database/
 │   │   ├── inMemoryDb.js          # Banco de dados em memória
 │   │   └── persistence.js         # Persistência em arquivo

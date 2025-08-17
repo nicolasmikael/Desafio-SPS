@@ -1,5 +1,5 @@
 {
-  "nextId": 3,
+  "nextId": 6,
   "users": [
     {
       "id": 1,
@@ -9,7 +9,16 @@
       "password": "$2b$10$fd9/8zxdCiRl4dPYkPmj5utcIQBmhqPS1ne2Z3RE672WD/Znxker2",
       "createdAt": "2025-08-14T23:03:46.023Z",
       "updatedAt": "2025-08-14T23:03:46.023Z"
+    },
+    {
+      "id": 4,
+      "email": "updated@example.com",
+      "name": "Updated User",
+      "type": "standard",
+      "password": "$2b$10$eyrInT/4QlpAfEO.PpTlDuhU23yCGg2ZGiOrLMdCCM25v2GL4frJC",
+      "createdAt": "2025-08-17T22:46:36.808Z",
+      "updatedAt": "2025-08-17T23:13:22.515Z"
     }
   ],
-  "lastSaved": "2025-08-14T23:21:56.718Z"
+  "lastSaved": "2025-08-17T23:13:22.523Z"
 }
