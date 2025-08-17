@@ -1,0 +1,15 @@
+{
+  "nextId": 3,
+  "users": [
+    {
+      "id": 1,
+      "email": "admin@sps.com",
+      "name": "Administrator",
+      "type": "admin",
+      "password": "$2b$10$fd9/8zxdCiRl4dPYkPmj5utcIQBmhqPS1ne2Z3RE672WD/Znxker2",
+      "createdAt": "2025-08-14T23:03:46.023Z",
+      "updatedAt": "2025-08-14T23:03:46.023Z"
+    }
+  ],
+  "lastSaved": "2025-08-14T23:21:56.718Z"
+}
