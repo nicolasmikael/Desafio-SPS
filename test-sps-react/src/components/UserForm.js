@@ -39,7 +39,7 @@ const UserForm = ({ user = null, isEdit = false }) => {
       }
       navigate("/users");
     } catch (error) {
-      toast.error(error.message);
+      toast.error(t("error.emailExists"));
     } finally {
       setLoading(false);
     }

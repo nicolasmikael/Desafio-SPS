@@ -111,6 +111,7 @@ const translations = {
     "error.deleteUser": "Failed to delete user",
     "error.loginFailed": "Login failed. Please try again.",
     "error.unexpected": "An unexpected error occurred",
+    "error.emailExists": "Email already exists",
 
     // General
     "general.welcome": "Welcome",
@@ -226,6 +227,7 @@ const translations = {
     "error.deleteUser": "Falha ao excluir usuário",
     "error.loginFailed": "Falha no login. Tente novamente.",
     "error.unexpected": "Ocorreu um erro inesperado",
+    "error.emailExists": "O email já está em uso",
 
     // General
     "general.welcome": "Bem-vindo",
@@ -342,6 +344,7 @@ const translations = {
     "error.deleteUser": "Error al eliminar usuario",
     "error.loginFailed": "Error de inicio de sesión. Inténtalo de nuevo.",
     "error.unexpected": "Ocurrió un error inesperado",
+    "error.emailExists": "El email ya está en uso",
 
     // General
     "general.welcome": "Bienvenido",
