@@ -23,7 +23,6 @@ function Users() {
   useEffect(() => {
     let filtered = users;
 
-    // Apply search filter
     if (searchTerm.trim() !== "") {
       filtered = filtered.filter(
         (user) =>
@@ -32,7 +31,6 @@ function Users() {
       );
     }
 
-    // Apply type filter
     if (typeFilter !== "") {
       filtered = filtered.filter((user) => user.type === typeFilter);
     }
@@ -58,7 +56,7 @@ function Users() {
       try {
         await UserService.delete(userId);
         toast.success(t("users.deleteSuccess"));
-        loadUsers(); // Reload the list
+        loadUsers();
       } catch (error) {
         toast.error(error.message);
       }

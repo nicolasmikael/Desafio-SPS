@@ -15,18 +15,14 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// JSON parsing error handler - must come after express.json()
 app.use(jsonParsingErrorHandler);
 
 app.use("/api", routes);
 
-// Setup Swagger documentation (protected with JWT)
 setupSwagger(app);
 
-// 404 handler for non-existent routes - must come after all routes
 app.use(notFoundHandler);
 
-// General error handler - must be last
 app.use(generalErrorHandler);
 
 app.listen(process.env.PORT, () => {

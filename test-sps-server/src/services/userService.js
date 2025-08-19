@@ -11,42 +11,36 @@ const database = require("../database/inMemoryDb");
  * @throws {Error} With status property for HTTP status codes
  */
 async function createUser({ email, name, password, type }) {
-  // Check if email already exists
   if (database.emailExists(email)) {
     const err = new Error("Email already exists");
     err.status = 400;
     throw err;
   }
 
-  // Validate required fields
   if (!email || !name || !password) {
     const err = new Error("Email, name, and password are required");
     err.status = 400;
     throw err;
   }
 
-  // Validate password length
   if (password.length < 6) {
     const err = new Error("Password must be at least 6 characters long");
     err.status = 400;
     throw err;
   }
 
-  // Validate name length
   if (name.length < 2 || name.length > 50) {
     const err = new Error("Name must be between 2 and 50 characters");
     err.status = 400;
     throw err;
   }
 
-  // Validate type if provided
   if (type && type !== "admin" && type !== "standard") {
     const err = new Error("Type must be either 'admin' or 'standard'");
     err.status = 400;
     throw err;
   }
 
-  // Create user
   const user = await database.createUser({
     email,
     name,
@@ -86,7 +80,6 @@ function getUserById(id) {
  * @throws {Error} With status property for HTTP status codes
  */
 async function updateUser(id, { email, name, password, type }) {
-  // Check if user exists
   const existingUser = database.getUserById(id);
   if (!existingUser) {
     const err = new Error("User not found");
@@ -94,35 +87,30 @@ async function updateUser(id, { email, name, password, type }) {
     throw err;
   }
 
-  // Check if email already exists (excluding current user)
   if (email && database.emailExists(email, parseInt(id))) {
     const err = new Error("Email already exists");
     err.status = 400;
     throw err;
   }
 
-  // Validate name length if provided
   if (name && (name.length < 2 || name.length > 50)) {
     const err = new Error("Name must be between 2 and 50 characters");
     err.status = 400;
     throw err;
   }
 
-  // Validate password length if provided
   if (password && password.length < 6) {
     const err = new Error("Password must be at least 6 characters long");
     err.status = 400;
     throw err;
   }
 
-  // Validate type if provided
   if (type && type !== "admin" && type !== "standard") {
     const err = new Error("Type must be either 'admin' or 'standard'");
     err.status = 400;
     throw err;
   }
 
-  // Update user
   const updatedUser = await database.updateUser(id, {
     email,
     name,
@@ -147,14 +135,12 @@ async function updateUser(id, { email, name, password, type }) {
  * @throws {Error} With status property for HTTP status codes
  */
 async function deleteUser(requestingUser, id) {
-  // Prevent admin from deleting themselves
   if (parseInt(id) === requestingUser.id) {
     const err = new Error("Cannot delete your own account");
     err.status = 400;
     throw err;
   }
 
-  // Check if user exists and delete
   const deleted = await database.deleteUser(id);
   if (!deleted) {
     const err = new Error("User not found");

@@ -27,7 +27,6 @@ const UserForm = ({ user = null, isEdit = false }) => {
     setLoading(true);
     try {
       if (isEdit) {
-        // Remove password if empty for updates
         const updateData = { ...data };
         if (!updateData.password) {
           delete updateData.password;

@@ -3,7 +3,6 @@ import { BrowserRouter } from "react-router-dom";
 import UserForm from "./UserForm";
 import { I18nProvider } from "../contexts/I18nContext";
 
-// Mock translations
 const mockTranslations = {
   "form.editUser": "Edit User",
   "users.createNew": "Create New User",
@@ -95,7 +94,6 @@ describe("UserForm Component", () => {
     cy.get('[data-testid="type-select"]').select("standard");
     cy.get('[data-testid="password-input"]').type("password123");
 
-    // Check that form is filled correctly
     cy.get('[data-testid="name-input"]').should("have.value", "Test User");
     cy.get('[data-testid="email-input"]').should(
       "have.value",
