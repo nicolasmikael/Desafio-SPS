@@ -1,21 +1,9 @@
-const database = require("../database/inMemoryDb");
+const { userService } = require("../services");
 
 const createUser = async (req, res) => {
   try {
     const { email, name, password, type } = req.body;
-
-    // Check if email already exists
-    if (database.emailExists(email)) {
-      return res.status(400).json({ error: "Email already exists" });
-    }
-
-    // Create user
-    const user = await database.createUser({
-      email,
-      name,
-      password,
-      type: type || "standard",
-    });
+    const user = await userService.createUser({ email, name, password, type });
 
     res.status(201).json({
       message: "User created successfully",
@@ -23,33 +11,39 @@ const createUser = async (req, res) => {
     });
   } catch (error) {
     console.error("Create user error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res
+      .status(error.status || 500)
+      .json({ error: error.message || "Internal server error" });
   }
 };
 
 const getAllUsers = async (req, res) => {
   try {
-    const users = database.getAllUsers();
-    res.json({ users });
+    const users = userService.getAllUsers();
+    res.status(200).json({ users });
   } catch (error) {
     console.error("Get all users error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res
+      .status(error.status || 500)
+      .json({ error: error.message || "Internal server error" });
   }
 };
 
 const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
-    const user = database.getUserById(id);
+    const user = userService.getUserById(id);
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    res.json({ user });
+    res.status(200).json({ user });
   } catch (error) {
     console.error("Get user by ID error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res
+      .status(error.status || 500)
+      .json({ error: error.message || "Internal server error" });
   }
 };
 
@@ -57,55 +51,36 @@ const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
     const { email, name, password, type } = req.body;
-
-    // Check if user exists
-    const existingUser = database.getUserById(id);
-    if (!existingUser) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    // Check if email already exists (excluding current user)
-    if (email && database.emailExists(email, parseInt(id))) {
-      return res.status(400).json({ error: "Email already exists" });
-    }
-
-    // Update user
-    const updatedUser = await database.updateUser(id, {
+    const updatedUser = await userService.updateUser(id, {
       email,
       name,
       password,
       type,
     });
 
-    res.json({
+    res.status(200).json({
       message: "User updated successfully",
       user: updatedUser,
     });
   } catch (error) {
     console.error("Update user error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res
+      .status(error.status || 500)
+      .json({ error: error.message || "Internal server error" });
   }
 };
 
 const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
+    await userService.deleteUser(req.user, id);
 
-    // Prevent admin from deleting themselves
-    if (parseInt(id) === req.user.id) {
-      return res.status(400).json({ error: "Cannot delete your own account" });
-    }
-
-    // Check if user exists and delete
-    const deleted = database.deleteUser(id);
-    if (!deleted) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    res.json({ message: "User deleted successfully" });
+    res.status(204).send();
   } catch (error) {
     console.error("Delete user error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res
+      .status(error.status || 500)
+      .json({ error: error.message || "Internal server error" });
   }
 };
 

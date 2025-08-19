@@ -30,10 +30,14 @@ export const AuthProvider = ({ children }) => {
     const checkAuth = async () => {
       if (token) {
         try {
+          // Validate the token with the backend
           const response = await axios.get(
-            `${process.env.REACT_APP_SERVER_URL}/auth/profile`
+            `${process.env.REACT_APP_SERVER_URL}/api/auth/profile`
           );
-          setUser(response.data.user);
+          if (response.status === 200) {
+            // Token is valid, set the user object from response
+            setUser(response.data.user);
+          }
         } catch (error) {
           console.error("Auth check failed:", error);
           logout();
@@ -48,7 +52,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_SERVER_URL}/auth/login`,
+        `${process.env.REACT_APP_SERVER_URL}/api/auth/login`,
         { email, password }
       );
 

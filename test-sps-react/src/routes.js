@@ -28,10 +28,18 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/users/new",
+    path: "/users/create",
     element: (
       <PrivateRoute requireAdmin={true}>
         <UserCreate />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/users/:userId/edit",
+    element: (
+      <PrivateRoute requireAdmin={true}>
+        <UserEdit />
       </PrivateRoute>
     ),
   },

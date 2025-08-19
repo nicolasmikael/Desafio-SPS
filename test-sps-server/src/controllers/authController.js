@@ -1,54 +1,36 @@
-const database = require("../database/inMemoryDb");
-const { generateToken } = require("../middleware/auth");
+const { authService } = require("../services");
 
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    const result = await authService.login({ email, password });
 
-    // Find user by email
-    const user = database.getUserByEmail(email);
-    if (!user) {
-      return res.status(401).json({ error: "Invalid credentials" });
-    }
-
-    // Validate password
-    const isValidPassword = await database.validatePassword(
-      password,
-      user.password
-    );
-    if (!isValidPassword) {
-      return res.status(401).json({ error: "Invalid credentials" });
-    }
-
-    // Generate JWT token
-    const token = generateToken(user);
-
-    // Return user data without password and token
-    const userWithoutPassword = database.getUserWithoutPassword(user);
-
-    res.json({
+    res.status(200).json({
       message: "Login successful",
-      token,
-      user: userWithoutPassword,
+      token: result.token,
+      user: result.user,
     });
   } catch (error) {
     console.error("Login error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res
+      .status(error.status || 500)
+      .json({ error: error.message || "Internal server error" });
   }
 };
 
 const getProfile = async (req, res) => {
   try {
-    const user = database.getUserById(req.user.id);
+    const user = authService.getProfile(req.user.id);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    const userWithoutPassword = database.getUserWithoutPassword(user);
-    res.json({ user: userWithoutPassword });
+    res.status(200).json({ user });
   } catch (error) {
     console.error("Get profile error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res
+      .status(error.status || 500)
+      .json({ error: error.message || "Internal server error" });
   }
 };
 

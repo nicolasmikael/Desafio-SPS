@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { Edit, Trash2, UserPlus, Loader } from "lucide-react";
 import UserService from "../services/UserService";
 import { useAuth } from "../contexts/AuthContext";
 import { useI18n } from "../contexts/I18nContext";
@@ -8,19 +9,36 @@ import Layout from "../components/Layout";
 
 function Users() {
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [typeFilter, setTypeFilter] = useState("");
   const [loading, setLoading] = useState(true);
-  const { isAdmin } = useAuth();
+  const { isAdmin, user: currentUser } = useAuth();
   const { t } = useI18n();
 
   useEffect(() => {
     loadUsers();
   }, []);
 
+  useEffect(() => {
+    if (searchTerm.trim() === "") {
+      setFilteredUsers(users);
+    } else {
+      const filtered = users.filter(
+        (user) =>
+          user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          user.email.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredUsers(filtered);
+    }
+  }, [users, searchTerm]);
+
   const loadUsers = async () => {
     try {
       setLoading(true);
       const userData = await UserService.list();
       setUsers(userData);
+      setFilteredUsers(userData);
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -40,60 +58,14 @@ function Users() {
     }
   };
 
-  const tableStyle = {
-    width: "100%",
-    borderCollapse: "collapse",
-    marginTop: "1rem",
-  };
-
-  const thStyle = {
-    backgroundColor: "#f8f9fa",
-    padding: "0.75rem",
-    textAlign: "left",
-    borderBottom: "2px solid #dee2e6",
-  };
-
-  const tdStyle = {
-    padding: "0.75rem",
-    borderBottom: "1px solid #dee2e6",
-  };
-
-  const buttonStyle = {
-    padding: "0.25rem 0.5rem",
-    margin: "0 0.25rem",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
-    textDecoration: "none",
-    display: "inline-block",
-    fontSize: "0.875rem",
-  };
-
-  const editButtonStyle = {
-    ...buttonStyle,
-    backgroundColor: "#007bff",
-    color: "white",
-  };
-
-  const deleteButtonStyle = {
-    ...buttonStyle,
-    backgroundColor: "#dc3545",
-    color: "white",
-  };
-
-  const createButtonStyle = {
-    ...buttonStyle,
-    backgroundColor: "#28a745",
-    color: "white",
-    padding: "0.5rem 1rem",
-    fontSize: "1rem",
-  };
-
   if (loading) {
     return (
       <Layout>
-        <div style={{ textAlign: "center", padding: "2rem" }}>
-          <div>{t("users.loading")}</div>
+        <div className="text-center p-8">
+          <div className="flex items-center justify-center gap-2">
+            <Loader className="w-5 h-5 animate-spin" />
+            <span>{t("users.loading")}</span>
+          </div>
         </div>
       </Layout>
     );
@@ -102,78 +74,120 @@ function Users() {
   return (
     <Layout>
       <div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "1rem",
-          }}
-        >
-          <h1>{t("users.title")}</h1>
-          {isAdmin && (
-            <Link to="/users/new" style={createButtonStyle}>
-              {t("users.createNew")}
-            </Link>
-          )}
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold text-gray-800">
+            {t("users.title")}
+          </h1>
+          <div className="flex items-center gap-4">
+            <input
+              type="text"
+              data-testid="search-input"
+              placeholder={t("users.search")}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            {isAdmin && (
+              <Link
+                to="/users/create"
+                data-testid="create-user-button"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-success-500 text-white rounded text-base hover:bg-success-600 transition-colors duration-200"
+              >
+                <UserPlus size={18} />
+                {t("users.createNew")}
+              </Link>
+            )}
+          </div>
         </div>
 
-        {users.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "2rem" }}>
-            <p>{t("users.noUsers")}</p>
+        {filteredUsers.length === 0 ? (
+          <div className="text-center p-8 bg-white rounded-lg shadow">
+            <p className="text-gray-600">
+              {searchTerm ? t("users.noUsersFound") : t("users.noUsers")}
+            </p>
           </div>
         ) : (
-          <table style={tableStyle}>
-            <thead>
-              <tr>
-                <th style={thStyle}>{t("table.id")}</th>
-                <th style={thStyle}>{t("table.name")}</th>
-                <th style={thStyle}>{t("table.email")}</th>
-                <th style={thStyle}>{t("table.type")}</th>
-                <th style={thStyle}>{t("table.createdAt")}</th>
-                {isAdmin && <th style={thStyle}>{t("table.actions")}</th>}
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((user) => (
-                <tr key={user.id}>
-                  <td style={tdStyle}>{user.id}</td>
-                  <td style={tdStyle}>{user.name}</td>
-                  <td style={tdStyle}>{user.email}</td>
-                  <td style={tdStyle}>
-                    <span
-                      style={{
-                        padding: "0.25rem 0.5rem",
-                        borderRadius: "4px",
-                        backgroundColor:
-                          user.type === "admin" ? "#dc3545" : "#007bff",
-                        color: "white",
-                        fontSize: "0.75rem",
-                      }}
-                    >
-                      {t(`userType.${user.type}`)}
-                    </span>
-                  </td>
-                  <td style={tdStyle}>
-                    {new Date(user.createdAt).toLocaleDateString()}
-                  </td>
-                  {isAdmin && (
-                    <td style={tdStyle}>
-                      <Link to={`/users/${user.id}`} style={editButtonStyle}>
-                        {t("action.edit")}
-                      </Link>
-                      <button
-                        style={deleteButtonStyle}
-                        onClick={() => handleDelete(user.id, user.name)}
-                      >
-                        {t("action.delete")}
-                      </button>
-                    </td>
-                  )}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="bg-white rounded-lg shadow overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full" data-testid="users-table">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b-2 border-gray-200">
+                      {t("table.id")}
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b-2 border-gray-200">
+                      {t("table.name")}
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b-2 border-gray-200">
+                      {t("table.email")}
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b-2 border-gray-200">
+                      {t("table.type")}
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b-2 border-gray-200">
+                      {t("table.createdAt")}
+                    </th>
+                    {isAdmin && (
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b-2 border-gray-200">
+                        {t("table.actions")}
+                      </th>
+                    )}
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {filteredUsers.map((user) => (
+                    <tr key={user.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {user.id}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {user.name}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {user.email}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span
+                          className={`px-2 py-1 text-xs font-semibold rounded ${
+                            user.type === "admin"
+                              ? "bg-danger-500 text-white"
+                              : "bg-primary-500 text-white"
+                          }`}
+                        >
+                          {t(`userType.${user.type}`)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {new Date(user.createdAt).toLocaleDateString()}
+                      </td>
+                      {isAdmin && (
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <div className="flex items-center gap-2">
+                            <Link
+                              to={`/users/${user.id}`}
+                              data-testid={`edit-user-${user.id}`}
+                              className="inline-flex items-center gap-1 px-3 py-1 bg-primary-500 text-white text-sm rounded hover:bg-primary-600 transition-colors duration-200"
+                            >
+                              <Edit size={14} />
+                              {t("action.edit")}
+                            </Link>
+                            <button
+                              data-testid={`delete-user-${user.id}`}
+                              className="inline-flex items-center gap-1 px-3 py-1 bg-danger-500 text-white text-sm rounded hover:bg-danger-600 transition-colors duration-200"
+                              onClick={() => handleDelete(user.id, user.name)}
+                            >
+                              <Trash2 size={14} />
+                              {t("action.delete")}
+                            </button>
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         )}
       </div>
       <ToastContainer position="top-right" />

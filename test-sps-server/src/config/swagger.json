@@ -201,7 +201,26 @@
         "properties": {
           "error": {
             "type": "string",
-            "example": "Error message description"
+            "example": "Specific error message"
+          }
+        }
+      },
+      "ValidationErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "Validation failed"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "Email is required",
+              "Password must be at least 6 characters"
+            ]
           }
         }
       },
@@ -262,6 +281,19 @@
               }
             }
           },
+          "400": {
+            "description": "Bad request - Invalid JSON format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "Invalid JSON format"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Invalid credentials",
             "content": {
@@ -318,6 +350,22 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "Access token required"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Invalid or expired token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "Invalid or expired token"
                 }
               }
             }
@@ -341,6 +389,9 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "Internal server error"
                 }
               }
             }
@@ -375,6 +426,9 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "Access token required"
                 }
               }
             }
@@ -385,6 +439,9 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "Internal server error"
                 }
               }
             }
@@ -426,10 +483,39 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ValidationErrorResponse"
+                    }
+                  ]
                 },
-                "example": {
-                  "error": "Email already exists"
+                "examples": {
+                  "emailExists": {
+                    "summary": "Email already exists",
+                    "value": {
+                      "error": "Email already exists"
+                    }
+                  },
+                  "validationFailed": {
+                    "summary": "Validation failed",
+                    "value": {
+                      "error": "Validation failed",
+                      "details": [
+                        "Name is required",
+                        "Email must be valid",
+                        "Password must be at least 6 characters"
+                      ]
+                    }
+                  },
+                  "invalidJSON": {
+                    "summary": "Invalid JSON format",
+                    "value": {
+                      "error": "Invalid JSON format"
+                    }
+                  }
                 }
               }
             }
@@ -440,6 +526,9 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "Access token required"
                 }
               }
             }
@@ -450,6 +539,9 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "Admin access required"
                 }
               }
             }
@@ -460,6 +552,9 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "Internal server error"
                 }
               }
             }
@@ -506,6 +601,9 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "Access token required"
                 }
               }
             }
@@ -529,6 +627,9 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "Internal server error"
                 }
               }
             }
@@ -591,10 +692,35 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ValidationErrorResponse"
+                    }
+                  ]
                 },
-                "example": {
-                  "error": "Email already exists"
+                "examples": {
+                  "emailExists": {
+                    "summary": "Email already exists",
+                    "value": {
+                      "error": "Email already exists"
+                    }
+                  },
+                  "validationFailed": {
+                    "summary": "Validation failed",
+                    "value": {
+                      "error": "Validation failed",
+                      "details": ["Email must be valid", "Name cannot be empty"]
+                    }
+                  },
+                  "invalidJSON": {
+                    "summary": "Invalid JSON format",
+                    "value": {
+                      "error": "Invalid JSON format"
+                    }
+                  }
                 }
               }
             }
@@ -605,6 +731,9 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "Access token required"
                 }
               }
             }
@@ -615,6 +744,9 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "Admin access required"
                 }
               }
             }
@@ -638,6 +770,9 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "Internal server error"
                 }
               }
             }
@@ -698,6 +833,9 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "Access token required"
                 }
               }
             }
@@ -708,6 +846,9 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "Admin access required"
                 }
               }
             }
@@ -731,6 +872,9 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "Internal server error"
                 }
               }
             }

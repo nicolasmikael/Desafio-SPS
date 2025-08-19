@@ -7,7 +7,7 @@ class UserService {
 
   async list() {
     try {
-      const response = await axios.get(`${this.baseURL}/users`);
+      const response = await axios.get(`${this.baseURL}/api/users`);
       return response.data.users;
     } catch (error) {
       throw new Error(error.response?.data?.error || "Failed to fetch users");
@@ -16,7 +16,7 @@ class UserService {
 
   async get(id) {
     try {
-      const response = await axios.get(`${this.baseURL}/users/${id}`);
+      const response = await axios.get(`${this.baseURL}/api/users/${id}`);
       return response.data.user;
     } catch (error) {
       throw new Error(error.response?.data?.error || "Failed to fetch user");
@@ -25,7 +25,7 @@ class UserService {
 
   async create(data) {
     try {
-      const response = await axios.post(`${this.baseURL}/users`, data);
+      const response = await axios.post(`${this.baseURL}/api/users`, data);
       return response.data.user;
     } catch (error) {
       throw new Error(error.response?.data?.error || "Failed to create user");
@@ -34,7 +34,7 @@ class UserService {
 
   async update(id, data) {
     try {
-      const response = await axios.put(`${this.baseURL}/users/${id}`, data);
+      const response = await axios.put(`${this.baseURL}/api/users/${id}`, data);
       return response.data.user;
     } catch (error) {
       throw new Error(error.response?.data?.error || "Failed to update user");
@@ -43,7 +43,7 @@ class UserService {
 
   async delete(id) {
     try {
-      await axios.delete(`${this.baseURL}/users/${id}`);
+      await axios.delete(`${this.baseURL}/api/users/${id}`);
       return true;
     } catch (error) {
       throw new Error(error.response?.data?.error || "Failed to delete user");

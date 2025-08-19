@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Home, Users, UserPlus, LogOut } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { useI18n } from "../contexts/I18nContext";
 import LanguageSwitcher from "./LanguageSwitcher";
@@ -14,70 +15,53 @@ const Layout = ({ children }) => {
     navigate("/signin");
   };
 
-  const navStyle = {
-    backgroundColor: "#007bff",
-    padding: "1rem",
-    marginBottom: "2rem",
-  };
-
-  const navContainerStyle = {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    maxWidth: "1200px",
-    margin: "0 auto",
-  };
-
-  const linkStyle = {
-    color: "white",
-    textDecoration: "none",
-    marginRight: "1rem",
-    padding: "0.5rem 1rem",
-    borderRadius: "4px",
-    transition: "background-color 0.2s",
-  };
-
-  const buttonStyle = {
-    ...linkStyle,
-    backgroundColor: "transparent",
-    border: "1px solid white",
-    cursor: "pointer",
-  };
-
-  const userInfoStyle = {
-    color: "white",
-    marginRight: "1rem",
-  };
-
   return (
     <div>
-      <nav style={navStyle}>
-        <div style={navContainerStyle}>
-          <div>
-            <Link to="/" style={linkStyle}>
+      <nav className="bg-primary-500 p-4 mb-8">
+        <div className="flex justify-between items-center max-w-6xl mx-auto">
+          <div className="flex items-center space-x-1">
+            <Link
+              to="/"
+              className="text-white px-4 py-2 rounded transition-colors duration-200 hover:bg-primary-600 flex items-center gap-2"
+            >
+              <Home size={18} />
               {t("nav.home")}
             </Link>
-            <Link to="/users" style={linkStyle}>
+            <Link
+              to="/users"
+              className="text-white px-4 py-2 rounded transition-colors duration-200 hover:bg-primary-600 flex items-center gap-2"
+            >
+              <Users size={18} />
               {t("nav.users")}
             </Link>
             {isAdmin && (
-              <Link to="/users/new" style={linkStyle}>
+              <Link
+                to="/users/create"
+                data-testid="create-user-button"
+                className="text-white px-4 py-2 rounded transition-colors duration-200 hover:bg-primary-600 flex items-center gap-2"
+              >
+                <UserPlus size={18} />
                 {t("users.createNew")}
               </Link>
             )}
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          <div className="flex items-center gap-4">
             <LanguageSwitcher />
-            <span style={userInfoStyle}>
+            <span className="text-white">
               {t("general.welcome")}, {user?.name}
             </span>
-            <button style={buttonStyle} onClick={handleLogout}>
+            <button
+              data-testid="logout-button"
+              className="text-white px-4 py-2 rounded bg-transparent border border-white transition-colors duration-200 hover:bg-white hover:text-primary-500 flex items-center gap-2"
+              onClick={handleLogout}
+            >
+              <LogOut size={18} />
               {t("nav.signOut")}
             </button>
           </div>
         </div>
       </nav>
-      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 1rem" }}>
+      <div className="max-w-6xl mx-auto px-4" data-testid="content-container">
         {children}
       </div>
     </div>

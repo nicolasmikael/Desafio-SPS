@@ -22,7 +22,9 @@ class InMemoryDatabase {
       }
 
       this.initialized = true;
-      console.log(`Database initialized with ${this.users.size} users`);
+      if (process.env.NODE_ENV !== "test") {
+        console.log(`Database initialized with ${this.users.size} users`);
+      }
     } catch (error) {
       console.error("Error initializing database:", error);
       // Fallback to creating admin user
@@ -35,7 +37,7 @@ class InMemoryDatabase {
     const hashedPassword = await bcrypt.hash("admin123", 10);
     const adminUser = {
       id: this.nextId++,
-      email: "admin@sps.com",
+      email: "admin@admin.com",
       name: "Administrator",
       type: "admin",
       password: hashedPassword,

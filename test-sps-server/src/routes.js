@@ -13,7 +13,7 @@ const routes = Router();
 
 // Health check
 routes.get("/", (req, res) => {
-  res.json({ message: "SPS User Management API is running!" });
+  res.status(200).json({ message: "SPS User Management API is running!" });
 });
 
 // Authentication routes

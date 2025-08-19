@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { Save, X } from "lucide-react";
 import UserService from "../services/UserService";
 import { toast } from "react-toastify";
 import { useI18n } from "../contexts/I18nContext";
@@ -45,67 +46,27 @@ const UserForm = ({ user = null, isEdit = false }) => {
     }
   };
 
-  const formStyle = {
-    maxWidth: "600px",
-    margin: "0 auto",
-    backgroundColor: "white",
-    padding: "2rem",
-    borderRadius: "8px",
-    boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-  };
-
-  const inputStyle = {
-    width: "100%",
-    padding: "0.75rem",
-    border: "1px solid #ddd",
-    borderRadius: "4px",
-    fontSize: "1rem",
-    marginBottom: "0.5rem",
-  };
-
-  const selectStyle = {
-    ...inputStyle,
-  };
-
-  const buttonStyle = {
-    padding: "0.75rem 1.5rem",
-    margin: "0 0.5rem",
-    border: "none",
-    borderRadius: "4px",
-    fontSize: "1rem",
-    cursor: "pointer",
-  };
-
-  const submitButtonStyle = {
-    ...buttonStyle,
-    backgroundColor: "#007bff",
-    color: "white",
-  };
-
-  const cancelButtonStyle = {
-    ...buttonStyle,
-    backgroundColor: "#6c757d",
-    color: "white",
-  };
-
-  const errorStyle = {
-    color: "#dc3545",
-    fontSize: "0.875rem",
-    marginBottom: "0.5rem",
-  };
-
   return (
-    <form style={formStyle} onSubmit={handleSubmit(onSubmit)}>
-      <h2 style={{ textAlign: "center", marginBottom: "2rem" }}>
+    <form
+      className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-lg"
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      <h2 className="text-center text-2xl font-semibold mb-8 text-gray-800">
         {isEdit ? t("form.editUser") : t("users.createNew")}
       </h2>
 
-      <div style={{ marginBottom: "1rem" }}>
-        <label htmlFor="name">{t("form.name")}:</label>
+      <div className="mb-4">
+        <label
+          htmlFor="name"
+          className="block text-sm font-medium text-gray-700 mb-2"
+        >
+          {t("form.name")}:
+        </label>
         <input
           id="name"
           type="text"
-          style={inputStyle}
+          data-testid="name-input"
+          className="w-full p-3 border border-gray-300 rounded text-base mb-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
           {...register("name", {
             required: t("form.nameRequired"),
             minLength: {
@@ -118,15 +79,25 @@ const UserForm = ({ user = null, isEdit = false }) => {
             },
           })}
         />
-        {errors.name && <div style={errorStyle}>{errors.name.message}</div>}
+        {errors.name && (
+          <div className="text-danger-500 text-sm mb-2">
+            {errors.name.message}
+          </div>
+        )}
       </div>
 
-      <div style={{ marginBottom: "1rem" }}>
-        <label htmlFor="email">{t("form.email")}:</label>
+      <div className="mb-4">
+        <label
+          htmlFor="email"
+          className="block text-sm font-medium text-gray-700 mb-2"
+        >
+          {t("form.email")}:
+        </label>
         <input
           id="email"
           type="email"
-          style={inputStyle}
+          data-testid="email-input"
+          className="w-full p-3 border border-gray-300 rounded text-base mb-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
           {...register("email", {
             required: t("form.emailRequired"),
             pattern: {
@@ -135,30 +106,48 @@ const UserForm = ({ user = null, isEdit = false }) => {
             },
           })}
         />
-        {errors.email && <div style={errorStyle}>{errors.email.message}</div>}
+        {errors.email && (
+          <div className="text-danger-500 text-sm mb-2">
+            {errors.email.message}
+          </div>
+        )}
       </div>
 
-      <div style={{ marginBottom: "1rem" }}>
-        <label htmlFor="type">{t("form.userType")}:</label>
+      <div className="mb-4">
+        <label
+          htmlFor="type"
+          className="block text-sm font-medium text-gray-700 mb-2"
+        >
+          {t("form.userType")}:
+        </label>
         <select
           id="type"
-          style={selectStyle}
+          data-testid="type-select"
+          className="w-full p-3 border border-gray-300 rounded text-base mb-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
           {...register("type", { required: t("form.userTypeRequired") })}
         >
-          <option value="standard">{t("userType.standard")}</option>
-          <option value="admin">{t("userType.admin")}</option>
+          <option value="standard">Standard</option>
+          <option value="admin">Admin</option>
         </select>
-        {errors.type && <div style={errorStyle}>{errors.type.message}</div>}
+        {errors.type && (
+          <div className="text-danger-500 text-sm mb-2">
+            {errors.type.message}
+          </div>
+        )}
       </div>
 
-      <div style={{ marginBottom: "1rem" }}>
-        <label htmlFor="password">
-          {t("form.password")} {isEdit && t("form.passwordOptional")}:
+      <div className="mb-4">
+        <label
+          htmlFor="password"
+          className="block text-sm font-medium text-gray-700 mb-2"
+        >
+          {t("form.password")} {isEdit && `(${t("form.passwordOptional")})`}:
         </label>
         <input
           id="password"
           type="password"
-          style={inputStyle}
+          data-testid="password-input"
+          className="w-full p-3 border border-gray-300 rounded text-base mb-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
           {...register("password", {
             required: !isEdit ? t("form.passwordRequired") : false,
             minLength: {
@@ -168,19 +157,29 @@ const UserForm = ({ user = null, isEdit = false }) => {
           })}
         />
         {errors.password && (
-          <div style={errorStyle}>{errors.password.message}</div>
+          <div className="text-danger-500 text-sm mb-2">
+            {errors.password.message}
+          </div>
         )}
       </div>
 
-      <div style={{ textAlign: "center", marginTop: "2rem" }}>
+      <div className="text-center mt-8">
         <button
           type="button"
-          style={cancelButtonStyle}
+          data-testid="cancel-button"
+          className="px-6 py-3 mx-2 bg-gray-500 text-white rounded text-base cursor-pointer hover:bg-gray-600 transition-colors duration-200 flex items-center gap-2 inline-flex"
           onClick={() => navigate("/users")}
         >
+          <X size={18} />
           {t("action.cancel")}
         </button>
-        <button type="submit" style={submitButtonStyle} disabled={loading}>
+        <button
+          type="submit"
+          data-testid="submit-button"
+          className="px-6 py-3 mx-2 bg-primary-500 text-white rounded text-base cursor-pointer hover:bg-primary-600 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 inline-flex"
+          disabled={loading}
+        >
+          <Save size={18} />
           {loading
             ? isEdit
               ? t("form.updating")
