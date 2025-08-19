@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 // JSON parsing error handler - must come after express.json()
 app.use(jsonParsingErrorHandler);
 
-app.use(routes);
+app.use("/api", routes);
 
 // Setup Swagger documentation (protected with JWT)
 setupSwagger(app);

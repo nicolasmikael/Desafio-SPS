@@ -36,19 +36,25 @@ class Persistence {
         });
       });
 
-      console.log(
-        `Loaded ${parsed.users.length} users from persistent storage`
-      );
+      if (process.env.NODE_ENV !== "test") {
+        console.log(
+          `Loaded ${parsed.users.length} users from persistent storage`
+        );
+      }
       return {
         users: usersMap,
         nextId: parsed.nextId,
       };
     } catch (error) {
       if (error.code === "ENOENT") {
-        console.log("No persistent data found, starting with empty database");
+        if (process.env.NODE_ENV !== "test") {
+          console.log("No persistent data found, starting with empty database");
+        }
       } else {
         console.error("Error loading persistent data:", error.message);
-        console.log("Starting with empty database");
+        if (process.env.NODE_ENV !== "test") {
+          console.log("Starting with empty database");
+        }
       }
 
       return {
@@ -75,7 +81,9 @@ class Persistence {
       await fs.writeFile(TEMP_FILE, JSON.stringify(data, null, 2), "utf8");
       await fs.rename(TEMP_FILE, USERS_FILE);
 
-      console.log(`Saved ${usersArray.length} users to persistent storage`);
+      if (process.env.NODE_ENV !== "test") {
+        console.log(`Saved ${usersArray.length} users to persistent storage`);
+      }
     } catch (error) {
       console.error("Error saving data to persistent storage:", error);
       // Don't throw - let the operation continue in memory
@@ -85,7 +93,9 @@ class Persistence {
   async resetData() {
     try {
       await fs.unlink(USERS_FILE);
-      console.log("Persistent data reset successfully");
+      if (process.env.NODE_ENV !== "test") {
+        console.log("Persistent data reset successfully");
+      }
     } catch (error) {
       if (error.code !== "ENOENT") {
         console.error("Error resetting persistent data:", error);

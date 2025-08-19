@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { LogIn } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -35,63 +36,28 @@ function SignIn() {
     }
   };
 
-  const containerStyle = {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    minHeight: "100vh",
-    backgroundColor: "#f5f5f5",
-  };
-
-  const formStyle = {
-    backgroundColor: "white",
-    padding: "2rem",
-    borderRadius: "8px",
-    boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-    width: "100%",
-    maxWidth: "400px",
-  };
-
-  const inputStyle = {
-    width: "100%",
-    padding: "0.75rem",
-    border: "1px solid #ddd",
-    borderRadius: "4px",
-    fontSize: "1rem",
-    marginBottom: "0.5rem",
-  };
-
-  const buttonStyle = {
-    width: "100%",
-    padding: "0.75rem",
-    backgroundColor: "#007bff",
-    color: "white",
-    border: "none",
-    borderRadius: "4px",
-    fontSize: "1rem",
-    cursor: "pointer",
-    marginTop: "1rem",
-  };
-
-  const errorStyle = {
-    color: "#dc3545",
-    fontSize: "0.875rem",
-    marginBottom: "0.5rem",
-  };
-
   return (
-    <div style={containerStyle}>
-      <form style={formStyle} onSubmit={handleSubmit(onSubmit)}>
-        <h2 style={{ textAlign: "center", marginBottom: "2rem" }}>
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <form
+        className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <h2 className="text-center text-2xl font-semibold mb-8 text-gray-800">
           {t("app.title")}
         </h2>
 
-        <div style={{ marginBottom: "1rem" }}>
-          <label htmlFor="email">{t("auth.email")}:</label>
+        <div className="mb-4">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            {t("auth.email")}:
+          </label>
           <input
             id="email"
             type="email"
-            style={inputStyle}
+            data-testid="email-input"
+            className="w-full p-3 border border-gray-300 rounded text-base mb-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             {...register("email", {
               required: t("form.emailRequired"),
               pattern: {
@@ -100,15 +66,28 @@ function SignIn() {
               },
             })}
           />
-          {errors.email && <div style={errorStyle}>{errors.email.message}</div>}
+          {errors.email && (
+            <div
+              className="text-danger-500 text-sm mb-2"
+              data-testid="email-error"
+            >
+              {errors.email.message}
+            </div>
+          )}
         </div>
 
-        <div style={{ marginBottom: "1rem" }}>
-          <label htmlFor="password">{t("auth.password")}:</label>
+        <div className="mb-4">
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            {t("auth.password")}:
+          </label>
           <input
             id="password"
             type="password"
-            style={inputStyle}
+            data-testid="password-input"
+            className="w-full p-3 border border-gray-300 rounded text-base mb-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             {...register("password", {
               required: t("form.passwordRequired"),
               minLength: {
@@ -118,27 +97,33 @@ function SignIn() {
             })}
           />
           {errors.password && (
-            <div style={errorStyle}>{errors.password.message}</div>
+            <div
+              className="text-danger-500 text-sm mb-2"
+              data-testid="password-error"
+            >
+              {errors.password.message}
+            </div>
           )}
         </div>
 
-        <button type="submit" style={buttonStyle} disabled={loading}>
+        <button
+          type="submit"
+          data-testid="login-button"
+          className="w-full p-3 bg-primary-500 text-white rounded text-base cursor-pointer mt-4 hover:bg-primary-600 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          disabled={loading}
+        >
+          <LogIn size={18} />
           {loading ? t("auth.signingIn") : t("auth.signIn")}
         </button>
 
-        <div
-          style={{
-            marginTop: "2rem",
-            padding: "1rem",
-            backgroundColor: "#f8f9fa",
-            borderRadius: "4px",
-          }}
-        >
-          <h4>Demo Credentials:</h4>
-          <p>
-            <strong>Email:</strong> admin@sps.com
+        <div className="mt-8 p-4 bg-gray-50 rounded">
+          <h4 className="font-semibold text-gray-800 mb-2">
+            Demo Credentials:
+          </h4>
+          <p className="text-sm text-gray-600 mb-1">
+            <strong>Email:</strong> admin@admin.com
           </p>
-          <p>
+          <p className="text-sm text-gray-600">
             <strong>Password:</strong> admin123
           </p>
         </div>

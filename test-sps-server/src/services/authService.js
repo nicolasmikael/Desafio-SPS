@@ -11,7 +11,7 @@ const { generateToken } = require("../middleware/auth");
  */
 async function login({ email, password }) {
   // Validate required fields
-  if (!email || !password) {
+  if (!email || !password || !email.trim() || !password.trim()) {
     const err = new Error("Email and password are required");
     err.status = 400;
     throw err;

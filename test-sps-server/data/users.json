@@ -1,24 +1,33 @@
 {
-  "nextId": 6,
+  "nextId": 37,
   "users": [
     {
       "id": 1,
-      "email": "admin@sps.com",
+      "email": "admin@admin.com",
       "name": "Administrator",
       "type": "admin",
-      "password": "$2b$10$fd9/8zxdCiRl4dPYkPmj5utcIQBmhqPS1ne2Z3RE672WD/Znxker2",
-      "createdAt": "2025-08-14T23:03:46.023Z",
-      "updatedAt": "2025-08-14T23:03:46.023Z"
+      "password": "$2b$10$FToBu49aMUwIKC4P3OppYe4fuewhsHT0rV8f8D8jvUJxiE.9Y1Oka",
+      "createdAt": "2025-08-19T01:01:15.855Z",
+      "updatedAt": "2025-08-19T01:01:15.855Z"
     },
     {
-      "id": 4,
-      "email": "updated@example.com",
-      "name": "Updated User",
+      "id": 34,
+      "email": "standard@example.com",
+      "name": "Test User",
       "type": "standard",
-      "password": "$2b$10$eyrInT/4QlpAfEO.PpTlDuhU23yCGg2ZGiOrLMdCCM25v2GL4frJC",
-      "createdAt": "2025-08-17T22:46:36.808Z",
-      "updatedAt": "2025-08-17T23:13:22.515Z"
+      "password": "$2b$10$jZZvvEwfsYMn.DlZjHENYOg4WhM/uF4qbPG0/lLBcyKvwkZnMAsx2",
+      "createdAt": "2025-08-19T01:07:05.998Z",
+      "updatedAt": "2025-08-19T01:07:05.998Z"
+    },
+    {
+      "id": 36,
+      "email": "rafael.evangelista@igreja.com",
+      "name": "John Doe",
+      "type": "admin",
+      "password": "$2b$10$d57xLd0rW5.bh4vGIwLyxO2.lbmGQBTDC0PBufDbNVlyl2lW3W8E.",
+      "createdAt": "2025-08-19T01:57:14.400Z",
+      "updatedAt": "2025-08-19T01:57:14.400Z"
     }
   ],
-  "lastSaved": "2025-08-17T23:13:22.523Z"
+  "lastSaved": "2025-08-19T01:57:27.845Z"
 }

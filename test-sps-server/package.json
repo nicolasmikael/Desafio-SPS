@@ -4,7 +4,11 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": " nodemon --inspect=7000 src/index.js"
+    "dev": " nodemon --inspect=7000 src/index.js",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
+    "test": "cypress run",
+    "test:open": "cypress open"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
@@ -16,6 +20,7 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
+    "cypress": "^13.17.0",
     "nodemon": "^3.1.0"
   }
 }

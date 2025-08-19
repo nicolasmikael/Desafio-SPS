@@ -11,7 +11,9 @@ const translations = {
     // Users page
     "users.title": "Users Management",
     "users.createNew": "Create New User",
+    "users.search": "Search users...",
     "users.noUsers": "No users found.",
+    "users.noUsersFound": "No users found matching your search.",
     "users.loading": "Loading users...",
     "users.confirmDelete": 'Are you sure you want to delete user "{userName}"?',
     "users.deleteSuccess": "User deleted successfully",
@@ -38,7 +40,7 @@ const translations = {
     "form.password": "Password",
     "form.type": "Type",
     "form.required": "This field is required",
-    "form.invalidEmail": "Please enter a valid email",
+    "form.invalidEmail": "Invalid email format",
     "form.emailRequired": "Email is required",
     "form.passwordRequired": "Password is required",
     "form.passwordMinLength": "Password must be at least 6 characters",
@@ -352,7 +354,7 @@ const translations = {
   },
 };
 
-const I18nContext = createContext();
+export const I18nContext = createContext();
 
 export const I18nProvider = ({ children }) => {
   const [language, setLanguage] = useState(() => {

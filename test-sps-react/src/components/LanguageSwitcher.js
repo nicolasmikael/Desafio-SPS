@@ -20,12 +20,16 @@ function LanguageSwitcher() {
   };
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+    <div
+      data-testid="language-switcher-container"
+      style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+    >
       <label htmlFor="language-select" style={{ fontSize: "0.875rem" }}>
         {t("general.language")}:
       </label>
       <select
         id="language-select"
+        data-testid="language-switch"
         value={language}
         onChange={(e) => changeLanguage(e.target.value)}
         style={selectStyle}

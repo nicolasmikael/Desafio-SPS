@@ -1,5 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import {
+  BarChart3,
+  User,
+  Mail,
+  Activity,
+  CheckCircle,
+  Shield,
+} from "lucide-react";
 import Layout from "../components/Layout";
 import { useAuth } from "../contexts/AuthContext";
 import { useI18n } from "../contexts/I18nContext";
@@ -8,119 +16,138 @@ function Home() {
   const { t } = useI18n();
   const { user, isAdmin } = useAuth();
 
-  const cardStyle = {
-    backgroundColor: "white",
-    padding: "2rem",
-    borderRadius: "8px",
-    boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-    marginBottom: "2rem",
-  };
-
-  const linkStyle = {
-    display: "inline-block",
-    padding: "0.75rem 1.5rem",
-    backgroundColor: "#007bff",
-    color: "white",
-    textDecoration: "none",
-    borderRadius: "4px",
-    margin: "0.5rem",
-    transition: "background-color 0.2s",
-  };
-
-  const statsStyle = {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-    gap: "1rem",
-    marginTop: "2rem",
-  };
-
-  const statCardStyle = {
-    backgroundColor: "#f8f9fa",
-    padding: "1.5rem",
-    borderRadius: "8px",
-    textAlign: "center",
-  };
-
   return (
     <Layout>
       <div>
-        <div style={cardStyle}>
-          <h1>{t("home.title")}</h1>
-          <p>{t("home.greeting", { name: user?.name, role: user?.type })}</p>
-          <p>{t("home.description")}</p>
+        <div className="bg-white p-8 rounded-lg shadow-lg mb-8">
+          <h1 className="text-3xl font-bold text-gray-800 mb-4">
+            {t("home.title")}
+          </h1>
+          <p className="text-gray-600 mb-2">
+            {t("home.greeting", { name: user?.name, role: user?.type })}
+          </p>
+          <p className="text-gray-600">{t("home.description")}</p>
         </div>
 
-        <div style={cardStyle}>
-          <h2>{t("home.quickActions")}</h2>
-          <div>
-            <Link to="/users" style={linkStyle}>
+        <div className="bg-white p-8 rounded-lg shadow-lg mb-8">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+            {t("home.quickActions")}
+          </h2>
+          <div className="flex flex-wrap gap-2">
+            <Link
+              to="/users"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-primary-500 text-white rounded hover:bg-primary-600 transition-colors duration-200"
+            >
+              <User size={18} />
               {t("home.viewUsers")}
             </Link>
             {isAdmin && (
-              <Link to="/users/new" style={linkStyle}>
+              <Link
+                to="/users/create"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-success-500 text-white rounded hover:bg-success-600 transition-colors duration-200"
+              >
+                <User size={18} />
                 {t("users.createNew")}
               </Link>
             )}
           </div>
         </div>
 
-        <div style={statsStyle}>
-          <div style={statCardStyle}>
-            <h3>{t("home.yourRole")}</h3>
-            <p style={{ fontSize: "1.5rem", margin: "0.5rem 0" }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+          <div className="bg-gray-50 p-6 rounded-lg text-center">
+            <div className="flex justify-center mb-4">
+              {user?.type === "admin" ? (
+                <Shield className="w-8 h-8 text-danger-500" />
+              ) : (
+                <User className="w-8 h-8 text-primary-500" />
+              )}
+            </div>
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+              {t("home.yourRole")}
+            </h3>
+            <p className="text-2xl font-bold text-gray-900 my-2">
               {user?.type === "admin"
                 ? t("userType.admin")
                 : t("userType.standard")}
             </p>
-            <p style={{ color: "#6c757d", fontSize: "0.875rem" }}>
+            <p className="text-gray-500 text-sm">
               {user?.type === "admin"
                 ? t("home.adminPermissions")
                 : t("home.userPermissions")}
             </p>
           </div>
 
-          <div style={statCardStyle}>
-            <h3>{t("home.accountInfo")}</h3>
-            <p style={{ fontSize: "1.2rem", margin: "0.5rem 0" }}>
+          <div className="bg-gray-50 p-6 rounded-lg text-center">
+            <div className="flex justify-center mb-4">
+              <Mail className="w-8 h-8 text-primary-500" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+              {t("home.accountInfo")}
+            </h3>
+            <p className="text-xl font-medium text-gray-900 my-2 break-all">
               {user?.email}
             </p>
-            <p style={{ color: "#6c757d", fontSize: "0.875rem" }}>
-              {t("home.registeredEmail")}
-            </p>
+            <p className="text-gray-500 text-sm">{t("home.registeredEmail")}</p>
           </div>
 
-          <div style={statCardStyle}>
-            <h3>{t("home.systemStatusTitle")}</h3>
-            <p
-              style={{
-                fontSize: "1.5rem",
-                margin: "0.5rem 0",
-                color: "#28a745",
-              }}
-            >
+          <div className="bg-gray-50 p-6 rounded-lg text-center">
+            <div className="flex justify-center mb-4">
+              <Activity className="w-8 h-8 text-success-500" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+              {t("home.systemStatusTitle")}
+            </h3>
+            <p className="text-2xl font-bold text-success-500 my-2">
               {t("home.online")}
             </p>
-            <p style={{ color: "#6c757d", fontSize: "0.875rem" }}>
-              {t("home.systemStatus")}
-            </p>
+            <p className="text-gray-500 text-sm">{t("home.systemStatus")}</p>
           </div>
         </div>
 
-        <div style={cardStyle}>
-          <h2>{t("home.featuresTitle")}</h2>
-          <ul style={{ lineHeight: "1.8" }}>
-            <li>✅ {t("home.feature.jwtAuth")}</li>
-            <li>✅ {t("home.feature.viewUsers")}</li>
+        <div className="bg-white p-8 rounded-lg shadow-lg mt-8">
+          <div className="flex items-center gap-2 mb-6">
+            <BarChart3 className="w-6 h-6 text-primary-500" />
+            <h2 className="text-2xl font-semibold text-gray-800">
+              {t("home.featuresTitle")}
+            </h2>
+          </div>
+          <ul className="space-y-3">
+            <li className="flex items-center gap-3">
+              <CheckCircle className="w-5 h-5 text-success-500" />
+              <span>{t("home.feature.jwtAuth")}</span>
+            </li>
+            <li className="flex items-center gap-3">
+              <CheckCircle className="w-5 h-5 text-success-500" />
+              <span>{t("home.feature.viewUsers")}</span>
+            </li>
             {isAdmin && (
               <>
-                <li>✅ {t("home.feature.createUsers")}</li>
-                <li>✅ {t("home.feature.editUsers")}</li>
-                <li>✅ {t("home.feature.deleteUsers")}</li>
-                <li>✅ {t("home.feature.roleAccess")}</li>
+                <li className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-success-500" />
+                  <span>{t("home.feature.createUsers")}</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-success-500" />
+                  <span>{t("home.feature.editUsers")}</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-success-500" />
+                  <span>{t("home.feature.deleteUsers")}</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-success-500" />
+                  <span>{t("home.feature.roleAccess")}</span>
+                </li>
               </>
             )}
-            <li>✅ {t("home.feature.responsive")}</li>
-            <li>✅ {t("home.feature.notifications")}</li>
+            <li className="flex items-center gap-3">
+              <CheckCircle className="w-5 h-5 text-success-500" />
+              <span>{t("home.feature.responsive")}</span>
+            </li>
+            <li className="flex items-center gap-3">
+              <CheckCircle className="w-5 h-5 text-success-500" />
+              <span>{t("home.feature.notifications")}</span>
+            </li>
           </ul>
         </div>
       </div>
