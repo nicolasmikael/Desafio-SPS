@@ -1,5 +1,5 @@
 {
-  "nextId": 38,
+  "nextId": 40,
   "users": [
     {
       "id": 1,
@@ -27,7 +27,25 @@
       "password": "$2b$10$wnU92/IH4qqgdOU0OVLtPe27Ox5VTW1kKNhHvyuepXx65NKL2WflW",
       "createdAt": "2025-08-19T02:14:57.670Z",
       "updatedAt": "2025-08-19T02:14:57.670Z"
+    },
+    {
+      "id": 38,
+      "email": "nick_ff@hotmail.com",
+      "name": "John Doe",
+      "type": "admin",
+      "password": "$2b$10$xux7gdXR3q1Q5GCvBaeud.O2L38x1HURhNAA1eePyfrEnep42mkfm",
+      "createdAt": "2025-08-19T02:30:57.213Z",
+      "updatedAt": "2025-08-19T02:30:57.213Z"
+    },
+    {
+      "id": 39,
+      "email": "nicolas.fernandes@teste.com",
+      "name": "Nicolas Mikael",
+      "type": "admin",
+      "password": "$2b$10$Z/PWO7s91Tn4X94hlLLN..n739hVs.qxhg13g7ZzpBLKQ6EvaLu5i",
+      "createdAt": "2025-08-19T02:33:34.776Z",
+      "updatedAt": "2025-08-19T02:33:34.776Z"
     }
   ],
-  "lastSaved": "2025-08-19T02:21:52.800Z"
+  "lastSaved": "2025-08-19T02:33:34.777Z"
 }

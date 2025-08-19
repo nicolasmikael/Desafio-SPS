@@ -26,7 +26,7 @@ class UserService {
   async create(data) {
     try {
       const response = await axios.post(`${this.baseURL}/api/users`, data);
-      return response.data.user;
+      return response.data;
     } catch (error) {
       throw new Error(error.response?.data?.error || "Failed to create user");
     }
@@ -35,7 +35,7 @@ class UserService {
   async update(id, data) {
     try {
       const response = await axios.put(`${this.baseURL}/api/users/${id}`, data);
-      return response.data.user;
+      return response.data;
     } catch (error) {
       throw new Error(error.response?.data?.error || "Failed to update user");
     }

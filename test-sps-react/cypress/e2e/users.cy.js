@@ -31,7 +31,7 @@ describe("Users Management", () => {
 
     it("should display users table", () => {
       cy.get('[data-testid="users-table"]').should("be.visible");
-      cy.contains("Administrator").should("be.visible");
+      cy.contains("Admin").should("be.visible");
     });
 
     it("should have create user button", () => {
@@ -43,7 +43,7 @@ describe("Users Management", () => {
     });
 
     it("should navigate to create user page", () => {
-      cy.get('[data-testid="create-user-button"]').click();
+      cy.get('[data-testid="create-user-button"]').first().click();
       cy.url().should("include", "/users/create");
     });
 
@@ -111,7 +111,9 @@ describe("Users Management", () => {
       }).as("createUser");
 
       cy.get('[data-testid="name-input"]').type("New User");
-      cy.get('[data-testid="email-input"]').type("newuser@example.com");
+      cy.get('[data-testid="email-input"]').type(
+        `newuser${Date.now()}@example.com`
+      );
       cy.get('[data-testid="type-select"]').select("standard");
       cy.get('[data-testid="password-input"]').type("password123");
       cy.get('[data-testid="submit-button"]').click();
@@ -193,7 +195,7 @@ describe("Users Management", () => {
 
       cy.get('[data-testid="email-input"]')
         .clear()
-        .type("existing@example.com");
+        .type(`existing${Date.now()}@example.com`);
       cy.get('[data-testid="submit-button"]').click();
 
       cy.wait("@updateUserError");

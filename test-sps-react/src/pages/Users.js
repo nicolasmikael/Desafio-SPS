@@ -188,14 +188,16 @@ function Users() {
                               <Edit size={14} />
                               {t("action.edit")}
                             </Link>
-                            <button
-                              data-testid={`delete-user-${user.id}`}
-                              className="inline-flex items-center gap-1 px-3 py-1 bg-danger-500 text-white text-sm rounded hover:bg-danger-600 transition-colors duration-200"
-                              onClick={() => handleDelete(user.id, user.name)}
-                            >
-                              <Trash2 size={14} />
-                              {t("action.delete")}
-                            </button>
+                            {user.id !== currentUser.id && (
+                              <button
+                                data-testid={`delete-user-${user.id}`}
+                                className="inline-flex items-center gap-1 px-3 py-1 bg-danger-500 text-white text-sm rounded hover:bg-danger-600 transition-colors duration-200"
+                                onClick={() => handleDelete(user.id, user.name)}
+                              >
+                                <Trash2 size={14} />
+                                {t("action.delete")}
+                              </button>
+                            )}
                           </div>
                         </td>
                       )}
