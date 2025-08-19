@@ -1,3 +1,4 @@
+/* global cy */
 describe("Users Management", () => {
   beforeEach(() => {
     // Setup API intercepts before each test
@@ -7,6 +8,18 @@ describe("Users Management", () => {
     cy.intercept("POST", "**/api/auth/login", { fixture: "auth.json" }).as(
       "login"
     );
+    // Intercept profile request to prevent token validation failure
+    cy.intercept("GET", "**/api/auth/profile", {
+      statusCode: 200,
+      body: {
+        user: {
+          id: 1,
+          name: "Admin User",
+          email: "admin@admin.com",
+          type: "admin",
+        },
+      },
+    }).as("getProfile");
     cy.login();
   });
 

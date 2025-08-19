@@ -1,5 +1,5 @@
 {
-  "nextId": 37,
+  "nextId": 38,
   "users": [
     {
       "id": 1,
@@ -27,7 +27,16 @@
       "password": "$2b$10$d57xLd0rW5.bh4vGIwLyxO2.lbmGQBTDC0PBufDbNVlyl2lW3W8E.",
       "createdAt": "2025-08-19T01:57:14.400Z",
       "updatedAt": "2025-08-19T01:57:14.400Z"
+    },
+    {
+      "id": 37,
+      "email": "admin@sps.com",
+      "name": "Administrador2",
+      "type": "standard",
+      "password": "$2b$10$wnU92/IH4qqgdOU0OVLtPe27Ox5VTW1kKNhHvyuepXx65NKL2WflW",
+      "createdAt": "2025-08-19T02:14:57.670Z",
+      "updatedAt": "2025-08-19T02:14:57.670Z"
     }
   ],
-  "lastSaved": "2025-08-19T01:57:27.845Z"
+  "lastSaved": "2025-08-19T02:14:57.671Z"
 }
