@@ -21,17 +21,24 @@ function Users() {
   }, []);
 
   useEffect(() => {
-    if (searchTerm.trim() === "") {
-      setFilteredUsers(users);
-    } else {
-      const filtered = users.filter(
+    let filtered = users;
+
+    // Apply search filter
+    if (searchTerm.trim() !== "") {
+      filtered = filtered.filter(
         (user) =>
           user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           user.email.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      setFilteredUsers(filtered);
     }
-  }, [users, searchTerm]);
+
+    // Apply type filter
+    if (typeFilter !== "") {
+      filtered = filtered.filter((user) => user.type === typeFilter);
+    }
+
+    setFilteredUsers(filtered);
+  }, [users, searchTerm, typeFilter]);
 
   const loadUsers = async () => {
     try {
@@ -87,6 +94,16 @@ function Users() {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
+            <select
+              data-testid="type-filter"
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+            >
+              <option value="">{t("users.allTypes")}</option>
+              <option value="admin">{t("userType.admin")}</option>
+              <option value="standard">{t("userType.standard")}</option>
+            </select>
             {isAdmin && (
               <Link
                 to="/users/create"

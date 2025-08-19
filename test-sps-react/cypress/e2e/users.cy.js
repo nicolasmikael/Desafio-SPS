@@ -233,10 +233,10 @@ describe("Users Management", () => {
         },
       }).as("getUsersAfterDelete");
 
+      cy.window().then((win) => {
+        cy.stub(win, "confirm").returns(true);
+      });
       cy.get('[data-testid="delete-user-2"]').click();
-
-      // Confirm deletion in modal
-      cy.get('[data-testid="confirm-delete"]').click();
 
       cy.wait("@deleteUser");
       cy.wait("@getUsersAfterDelete");
@@ -246,8 +246,10 @@ describe("Users Management", () => {
     });
 
     it("should cancel deletion", () => {
+      cy.window().then((win) => {
+        cy.stub(win, "confirm").returns(false);
+      });
       cy.get('[data-testid="delete-user-2"]').click();
-      cy.get('[data-testid="cancel-delete"]').click();
 
       cy.contains("John Doe").should("be.visible");
     });
@@ -260,13 +262,13 @@ describe("Users Management", () => {
       // Switch to Portuguese
       cy.get('[data-testid="language-switch"]').select("pt");
 
-      cy.contains("Usuários").should("be.visible");
+      cy.contains("Gerenciamento de Usuários").should("be.visible");
       cy.contains("Criar Novo Usuário").should("be.visible");
 
       // Switch back to English
       cy.get('[data-testid="language-switch"]').select("en");
 
-      cy.contains("Users").should("be.visible");
+      cy.contains("Users Management").should("be.visible");
       cy.contains("Create New User").should("be.visible");
     });
   });
