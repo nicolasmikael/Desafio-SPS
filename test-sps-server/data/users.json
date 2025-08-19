@@ -20,15 +20,6 @@
       "updatedAt": "2025-08-19T01:07:05.998Z"
     },
     {
-      "id": 36,
-      "email": "rafael.evangelista@igreja.com",
-      "name": "John Doe",
-      "type": "admin",
-      "password": "$2b$10$d57xLd0rW5.bh4vGIwLyxO2.lbmGQBTDC0PBufDbNVlyl2lW3W8E.",
-      "createdAt": "2025-08-19T01:57:14.400Z",
-      "updatedAt": "2025-08-19T01:57:14.400Z"
-    },
-    {
       "id": 37,
       "email": "admin@sps.com",
       "name": "Administrador2",
@@ -38,5 +29,5 @@
       "updatedAt": "2025-08-19T02:14:57.670Z"
     }
   ],
-  "lastSaved": "2025-08-19T02:14:57.671Z"
+  "lastSaved": "2025-08-19T02:21:52.800Z"
 }
