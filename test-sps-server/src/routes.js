@@ -11,12 +11,10 @@ const {
 
 const routes = Router();
 
-// Health check
 routes.get("/", (req, res) => {
   res.status(200).json({ message: "SPS User Management API is running!" });
 });
 
-// Authentication routes
 routes.post(
   "/auth/login",
   validateLogin,
@@ -26,7 +24,6 @@ routes.post(
 
 routes.get("/auth/profile", authenticateToken, authController.getProfile);
 
-// User routes (all protected)
 routes.post(
   "/users",
   authenticateToken,

@@ -10,14 +10,12 @@ const { generateToken } = require("../middleware/auth");
  * @throws {Error} With status property for HTTP status codes
  */
 async function login({ email, password }) {
-  // Validate required fields
   if (!email || !password || !email.trim() || !password.trim()) {
     const err = new Error("Email and password are required");
     err.status = 400;
     throw err;
   }
 
-  // Find user by email
   const user = database.getUserByEmail(email);
   if (!user) {
     const err = new Error("Invalid credentials");
@@ -25,7 +23,6 @@ async function login({ email, password }) {
     throw err;
   }
 
-  // Validate password
   const isValidPassword = await database.validatePassword(
     password,
     user.password
@@ -36,10 +33,8 @@ async function login({ email, password }) {
     throw err;
   }
 
-  // Generate JWT token
   const token = generateToken(user);
 
-  // Return user data without password and token
   const userWithoutPassword = database.getUserWithoutPassword(user);
 
   return {

@@ -21,12 +21,10 @@ class Persistence {
       const data = await fs.readFile(USERS_FILE, "utf8");
       const parsed = JSON.parse(data);
 
-      // Validate the structure
       if (!parsed.nextId || !Array.isArray(parsed.users)) {
         throw new Error("Invalid data structure");
       }
 
-      // Convert users array to Map with proper date objects
       const usersMap = new Map();
       parsed.users.forEach((user) => {
         usersMap.set(user.id, {
@@ -68,7 +66,6 @@ class Persistence {
     try {
       await this.ensureDataDirectory();
 
-      // Convert Map to array for JSON serialization
       const usersArray = Array.from(usersMap.values());
 
       const data = {
@@ -77,7 +74,6 @@ class Persistence {
         lastSaved: new Date().toISOString(),
       };
 
-      // Atomic write: write to temp file then rename
       await fs.writeFile(TEMP_FILE, JSON.stringify(data, null, 2), "utf8");
       await fs.rename(TEMP_FILE, USERS_FILE);
 
@@ -86,7 +82,6 @@ class Persistence {
       }
     } catch (error) {
       console.error("Error saving data to persistent storage:", error);
-      // Don't throw - let the operation continue in memory
     }
   }
 

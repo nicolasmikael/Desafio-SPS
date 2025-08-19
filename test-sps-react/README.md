@@ -78,222 +78,163 @@ npm run eject
 
 ### Framework de Testes
 
-O projeto utiliza **Jest** com **React Testing Library** para testes unitários e de integração de componentes React.
+O projeto migrou completamente de **Jest** para **Cypress** como framework de testes, oferecendo uma solução integrada para testes E2E, de componentes e de API.
 
-### Bibliotecas de Teste Incluídas
+### Framework de Testes
 
-- **Jest** - Framework de testes JavaScript
-- **@testing-library/react** - Utilitários para testes de componentes React
-- **@testing-library/jest-dom** - Matchers customizados para Jest
-- **@testing-library/user-event** - Simulação de eventos de usuário
+| Ambiente     | Framework | Tipos de Teste         |
+| ------------ | --------- | ---------------------- |
+| **Frontend** | Cypress   | E2E, Component Testing |
 
 ### Estrutura dos Testes
 
 ```
 test-sps-react/
-├── src/
-│   ├── components/
-│   │   └── __tests__/
-│   │       ├── UserForm.test.js
-│   │       ├── Layout.test.js
-│   │       └── LanguageSwitcher.test.js
-│   ├── contexts/
-│   │   └── __tests__/
-│   │       └── AuthContext.test.js
-│   ├── services/
-│   │   └── __tests__/
-│   │       └── UserService.test.js
-│   ├── pages/
-│   │   └── __tests__/
-│   │       ├── SignIn.test.js
-│   │       └── Users.test.js
-│   └── setupTests.js           # Configuração global dos testes
-├── package.json                # Scripts e dependências de teste
-└── README.md                   # Esta documentação
+├── cypress/
+│   ├── e2e/                    # Testes End-to-End
+│   │   ├── auth.cy.js         # Autenticação
+│   │   └── users.cy.js        # Gestão de usuários
+│   ├── component/              # Testes de Componentes
+│   │   └── UserForm.cy.js     # Formulário de usuário
+│   ├── fixtures/              # Dados mockados
+│   │   ├── auth.json         # Dados de autenticação
+│   │   └── users.json        # Lista de usuários
+│   └── support/              # Configurações
+│       ├── commands.js       # Comandos customizados
+│       └── e2e.js           # Setup global
+├── package.json              # Scripts e dependências de teste
+└── README.md                 # Esta documentação
 ```
 
 ### Configuração
 
 Os testes estão configurados com:
 
-- **React Testing Library** para renderização de componentes
-- **Mock Service Worker (MSW)** para mock de APIs (quando necessário)
-- **Mocks automáticos** para localStorage, window.matchMedia, etc.
-- **Setup global** em `setupTests.js`
+- **Cypress Component Testing** para testes de componentes React
+- **Cypress E2E Testing** para testes de ponta a ponta
+- **Comandos customizados** para facilitar os testes
+- **Fixtures** com dados de teste mockados
+- **Intercepts de API** para mock de endpoints
 
 ### Scripts de Teste
 
 ```bash
-# Executar todos os testes
+# Abrir Cypress UI para desenvolvimento
+npm run test:open
+
+# Executar todos os testes em modo headless
 npm test
 
-# Executar testes em modo watch (recomendado para desenvolvimento)
-npm run test:watch
+# Executar apenas testes E2E
+npm run cy:e2e
 
-# Executar testes com relatório de cobertura
-npm run test:coverage
+# Executar apenas testes de componentes
+npm run cy:component
 ```
 
 ### Tipos de Teste Implementados
 
-#### 1. Testes de Componentes
+#### 1. Testes E2E (End-to-End)
 
-- **UserForm.test.js**: Testa formulário de usuário (criação e edição)
-- **Layout.test.js**: Testa layout principal e navegação
-- **LanguageSwitcher.test.js**: Testa seletor de idiomas
+- **auth.cy.js**: Testa fluxo de autenticação (login/logout)
+- **users.cy.js**: Testa gestão de usuários via interface
+
+#### 2. Testes de Componentes
+
+- **UserForm.cy.js**: Testa componente de formulário de usuário
+
+#### 3. Testes de API (via intercepts)
+
+- **auth.cy.js**: Testa endpoints de autenticação
+- **users.cy.js**: Testa endpoints de gestão de usuários
+
+### Estratégias de Teste
+
+#### Testes E2E
 
 ```javascript
-// Exemplo de teste de componente
-describe("UserForm", () => {
-  it("should validate required fields", async () => {
-    render(<UserForm isEdit={false} />);
-    fireEvent.click(screen.getByText("Create User"));
-
-    await waitFor(() => {
-      expect(screen.getByText("Name is required")).toBeInTheDocument();
-    });
+// Exemplo de teste E2E
+describe("Users Management", () => {
+  it("should create user successfully", () => {
+    cy.login();
+    cy.navigateToUsers();
+    cy.createUser({ name: "Test User", email: "test@example.com" });
+    cy.contains("Test User").should("be.visible");
   });
 });
 ```
 
-#### 2. Testes de Contextos
-
-- **AuthContext.test.js**: Testa contexto de autenticação e estado global
-
-#### 3. Testes de Serviços
-
-- **UserService.test.js**: Testa comunicação com API e tratamento de erros
-
-#### 4. Testes de Páginas
-
-- **SignIn.test.js**: Testa página de login e validações
-- **Users.test.js**: Testa listagem e operações CRUD
-
-### Estratégias de Teste
-
-#### Renderização de Componentes
+#### Testes de Componentes
 
 ```javascript
-import { render, screen } from "@testing-library/react";
-import { BrowserRouter } from "react-router-dom";
-
-const TestWrapper = ({ children }) => (
-  <BrowserRouter>
-    <AuthProvider>{children}</AuthProvider>
-  </BrowserRouter>
-);
-
-test("renders component", () => {
-  render(<Component />, { wrapper: TestWrapper });
+// Exemplo de teste de componente
+describe("UserForm", () => {
+  it("should validate required fields", () => {
+    cy.mount(<UserForm isEdit={false} />);
+    cy.get("button").contains("Create User").click();
+    cy.contains("Name is required").should("be.visible");
+  });
 });
 ```
 
-#### Simulação de Eventos
+#### Mock de API
 
 ```javascript
-import userEvent from "@testing-library/user-event";
-
-test("handles user interaction", async () => {
-  const user = userEvent.setup();
-  render(<Component />);
-
-  await user.type(screen.getByLabelText(/email/i), "test@example.com");
-  await user.click(screen.getByRole("button", { name: /submit/i }));
-});
-```
-
-#### Mock de Dependências
-
-```javascript
-// Mock de serviços
-jest.mock("../services/UserService");
-
-// Mock de hooks
-const mockNavigate = jest.fn();
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useNavigate: () => mockNavigate,
-}));
+// Exemplo de mock de API
+cy.intercept("POST", "/users", {
+  statusCode: 201,
+  body: { user: { id: 999, name: "Mocked User", email: "mock@example.com" } },
+}).as("createUser");
+cy.wait("@createUser");
 ```
 
 ### Cobertura de Testes
 
-O projeto mantém cobertura de teste para:
+O projeto mantém cobertura de testes para:
 
-- **Componentes React** - Renderização e interações
-- **Hooks customizados** - Lógica de estado
-- **Serviços de API** - Requisições HTTP
-- **Contextos** - Estado global da aplicação
-- **Páginas** - Fluxos de usuário completos
+- **Autenticação**: Login/logout, validações, sessões
+- **Gestão de usuários**: CRUD completo via interface
+- **Formulários**: Validações, estados, interações
+- **Navegação**: Rotas protegidas, redirecionamentos
+- **Internacionalização**: Troca de idiomas
+- **Componentes**: Props, estados, renderização
 
-Para visualizar relatório de cobertura:
+### Comandos Customizados
 
-```bash
-npm run test:coverage
-# Relatório disponível em coverage/lcov-report/index.html
-```
-
-### Mocks Globais Configurados
-
-No arquivo `setupTests.js`:
+#### Frontend
 
 ```javascript
-// Mock do matchMedia para componentes responsivos
-Object.defineProperty(window, "matchMedia", {
-  writable: true,
-  value: jest.fn().mockImplementation((query) => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: jest.fn(),
-    removeListener: jest.fn(),
-    addEventListener: jest.fn(),
-    removeEventListener: jest.fn(),
-    dispatchEvent: jest.fn(),
-  })),
-});
-
-// Mock do localStorage
-const localStorageMock = {
-  getItem: jest.fn(),
-  setItem: jest.fn(),
-  removeItem: jest.fn(),
-  clear: jest.fn(),
-};
-global.localStorage = localStorageMock;
+cy.login(); // Login automático
+cy.createUser(userData); // Criar usuário via UI
+cy.navigateToUsers(); // Navegar para página
+cy.setupApiIntercepts(); // Mock APIs
 ```
 
 ### Execução em Desenvolvimento
 
-Durante o desenvolvimento, use o modo watch:
+Durante o desenvolvimento, use o Cypress UI:
 
 ```bash
-npm run test:watch
+npm run test:open
 ```
 
 Este modo:
 
-- ✅ Executa apenas testes relacionados a arquivos modificados
-- ✅ Re-executa automaticamente quando arquivos mudam
-- ✅ Permite filtrar testes por padrão
-- ✅ Oferece interface interativa
+- ✅ Oferece interface visual para executar testes
+- ✅ Permite debugar testes passo a passo
+- ✅ Mostra logs e snapshots do DOM
+- ✅ Permite filtrar testes por nome
 
 ### Debugging de Testes
 
 Para debugar testes:
 
 ```bash
-# Executar teste específico
-npm test -- --testNamePattern="should validate email"
+# Abrir Cypress UI
+npm run test:open
 
-# Executar arquivo específico
-npm test UserForm.test.js
-
-# Modo verbose
-npm test -- --verbose
-
-# Watch com cobertura
-npm test -- --coverage --watchAll
+# Executar testes em modo headless com logs
+npm test -- --headed --no-exit
 ```
 
 ### Boas Práticas Implementadas
@@ -364,7 +305,8 @@ Os testes são executados automaticamente em:
 Comando para CI:
 
 ```bash
-npm run test:coverage -- --coverage --watchAll=false
+# Executar testes em modo headless
+npm test
 ```
 
 ## 🏗 Estrutura do Projeto
@@ -494,7 +436,7 @@ O frontend se conecta aos seguintes endpoints do backend:
 
 ### Administrador
 
-- **Email**: admin@sps.com
+- **Email**: admin@admin.com
 - **Senha**: admin123
 
 ## 🐛 Solução de Problemas
@@ -526,39 +468,11 @@ npm run build
 npx serve -s build
 ```
 
-### Hospedagem
-
-A aplicação pode ser hospedada em:
-
-- Vercel
-- Netlify
-- GitHub Pages
-- AWS S3 + CloudFront
-- Qualquer servidor de arquivos estáticos
-
-## 📊 Performance
-
-- Lazy loading de componentes
-- Code splitting automático
-- Otimização de imagens
-- Minificação de CSS e JavaScript
-- Cache de requisições com Axios
-
 ## 🔄 Atualizações Futuras
 
 - [ ] Implementar upload de foto de perfil
 - [ ] Adicionar paginação na listagem de usuários
 - [ ] Implementar busca e filtros avançados
 - [ ] Adicionar tema escuro
-- [ ] Implementar PWA completo
-- [ ] Adicionar testes unitários e E2E
 - [ ] Implementar recuperação de senha
 - [ ] Adicionar autenticação com redes sociais
-
-## 📞 Suporte
-
-Para dúvidas ou problemas, entre em contato com a equipe de desenvolvimento.
-
----
-
-**Desenvolvido com ❤️ para o Sistema de Gerenciamento de Usuários SPS**

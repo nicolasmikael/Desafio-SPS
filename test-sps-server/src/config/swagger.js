@@ -2,7 +2,6 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
 
 const setupSwagger = (app) => {
-  // Swagger UI options
   const options = {
     explorer: true,
     customCss: ".swagger-ui .topbar { display: none }",
@@ -15,7 +14,6 @@ const setupSwagger = (app) => {
     },
   };
 
-  // Public Swagger route - authentication handled within Swagger UI
   app.use(
     "/api-docs",
     swaggerUi.serve,

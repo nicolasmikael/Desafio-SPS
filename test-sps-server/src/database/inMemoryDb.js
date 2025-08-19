@@ -11,12 +11,10 @@ class InMemoryDatabase {
 
   async init() {
     try {
-      // Load existing data from persistence
       const { users, nextId } = await persistence.loadData();
       this.users = users;
       this.nextId = nextId;
 
-      // If no users exist, create the admin user
       if (this.users.size === 0) {
         await this.initializeAdminUser();
       }
@@ -27,7 +25,7 @@ class InMemoryDatabase {
       }
     } catch (error) {
       console.error("Error initializing database:", error);
-      // Fallback to creating admin user
+
       await this.initializeAdminUser();
       this.initialized = true;
     }
@@ -46,7 +44,6 @@ class InMemoryDatabase {
     };
     this.users.set(adminUser.id, adminUser);
 
-    // Save the initial admin user to persistence
     await this.saveToFile();
   }
 
@@ -64,7 +61,6 @@ class InMemoryDatabase {
     }
   }
 
-  // User CRUD operations
   async createUser(userData) {
     await this.waitForInitialization();
 
@@ -80,7 +76,6 @@ class InMemoryDatabase {
     };
     this.users.set(user.id, user);
 
-    // Save to persistence
     await this.saveToFile();
 
     return this.getUserWithoutPassword(user);
@@ -100,7 +95,7 @@ class InMemoryDatabase {
   getUserByEmail(email) {
     for (const user of this.users.values()) {
       if (user.email === email) {
-        return user; // Return with password for authentication
+        return user;
       }
     }
     return null;
@@ -126,7 +121,6 @@ class InMemoryDatabase {
 
     this.users.set(parseInt(id), updatedUser);
 
-    // Save to persistence
     await this.saveToFile();
 
     return this.getUserWithoutPassword(updatedUser);
@@ -140,7 +134,6 @@ class InMemoryDatabase {
 
     this.users.delete(parseInt(id));
 
-    // Save to persistence
     await this.saveToFile();
 
     return true;
@@ -165,7 +158,6 @@ class InMemoryDatabase {
   }
 }
 
-// Singleton instance
 const database = new InMemoryDatabase();
 
 module.exports = database;

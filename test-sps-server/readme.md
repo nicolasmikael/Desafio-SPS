@@ -73,113 +73,92 @@ npm run test:coverage
 
 ### Framework de Testes
 
-O projeto utiliza **Jest** como framework principal para testes unitários, com **Supertest** para testes de integração da API.
+O projeto migrou completamente de **Jest** para **Cypress** como framework de testes, oferecendo uma solução integrada para testes E2E, de componentes e de API.
+
+### Framework de Testes
+
+| Ambiente    | Framework | Tipos de Teste                   |
+| ----------- | --------- | -------------------------------- |
+| **Backend** | Cypress   | API Testing, Integration Testing |
 
 ### Estrutura dos Testes
 
 ```
 test-sps-server/
-├── src/
-│   ├── controllers/
-│   │   ├── __tests__/
-│   │   │   ├── userController.test.js
-│   │   │   └── authController.test.js
-│   ├── services/
-│   │   ├── __tests__/
-│   │   │   ├── userService.test.js
-│   │   │   └── authService.test.js
-│   ├── utils/
-│   │   └── __tests__/
-│   │       └── validators.test.js
-│   └── middleware/
-│       └── __tests__/
-│           └── auth.test.js
-├── jest.config.js              # Configuração do Jest
-└── package.json                # Scripts de teste
+├── cypress/
+│   ├── e2e/                    # Testes de API
+│   │   ├── auth-api.cy.js     # API de autenticação
+│   │   └── users-api.cy.js    # API de usuários
+│   ├── fixtures/              # Dados mockados
+│   │   ├── auth.json         # Dados de autenticação
+│   │   └── users.json        # Lista de usuários
+│   └── support/              # Configurações
+│       ├── commands.js       # Comandos customizados
+│       └── e2e.js           # Setup global
+├── package.json              # Scripts e dependências de teste
+└── README.md                 # Esta documentação
 ```
 
 ### Configuração
 
-O Jest está configurado com:
+Os testes estão configurados com:
 
-- **Ambiente Node.js** para testes de backend
-- **Cobertura de código** com limite mínimo de 70%
-- **Timeout** de 10 segundos para testes assíncronos
-- **Mocks automáticos** para dependências externas
+- **Cypress API Testing** para testes de integração
+- **Comandos customizados** para facilitar os testes
+- **Fixtures** com dados de teste mockados
+- **Configuração global** em `support/e2e.js`
 
 ### Scripts de Teste
 
 ```bash
-# Executar todos os testes
+# Abrir Cypress UI para desenvolvimento
+npm run test:open
+
+# Executar todos os testes em modo headless
 npm test
-
-# Executar testes em modo watch (desenvolvimento)
-npm run test:watch
-
-# Executar testes com relatório de cobertura
-npm run test:coverage
 ```
 
 ### Tipos de Teste Implementados
 
-#### 1. Testes de Controladores
+#### 1. Testes de API
 
-- **userController.test.js**: Testa endpoints de CRUD de usuários
-- **authController.test.js**: Testa endpoints de autenticação
+- **auth-api.cy.js**: Testa endpoints de autenticação
+- **users-api.cy.js**: Testa endpoints de CRUD de usuários
 
-```javascript
-// Exemplo de teste de controlador
-describe("UserController", () => {
-  it("should create a user successfully", async () => {
-    // Test implementation
-  });
-});
-```
+#### 2. Testes de Integração
 
-#### 2. Testes de Serviços
-
-- **userService.test.js**: Testa lógica de negócio de usuários
-- **authService.test.js**: Testa lógica de autenticação e JWT
-
-#### 3. Testes de Utilitários
-
-- **validators.test.js**: Testa funções de validação de dados
-
-#### 4. Testes de Middleware
-
-- **auth.test.js**: Testa middleware de autenticação JWT
+- **auth-api.cy.js**: Testa integração entre autenticação e JWT
+- **users-api.cy.js**: Testa integração entre controllers, services e database
 
 ### Cobertura de Testes
 
-O sistema visa manter pelo menos **70% de cobertura** em:
+O projeto mantém cobertura de testes para:
 
-- **Linhas de código** (statements)
-- **Branches** (condicionais)
-- **Funções**
-- **Statements**
-
-Para visualizar o relatório de cobertura:
-
-```bash
-npm run test:coverage
-# Abre o relatório em coverage/lcov-report/index.html
-```
+- **Endpoints de autenticação**: Login, JWT validation
+- **CRUD de usuários**: GET, POST, PUT, DELETE
+- **Validação de dados**: Campos obrigatórios, formatos
+- **Autorização**: Permissões por tipo de usuário
+- **Códigos de status**: 200, 201, 400, 401, 404, etc.
+- **Estrutura de respostas**: JSON schema validation
 
 ### Execução em CI/CD
 
 Os testes são executados automaticamente em:
 
-- **Pre-commit hooks** (opcional)
-- **Pull requests**
+- **Pull Requests**
 - **Deploy pipelines**
+- **Pre-commit hooks** (opcional)
 
-### Mocks e Fixtures
+### Comandos Customizados
 
-O projeto utiliza mocks para:
+#### Backend
 
-- **Banco de dados** - Mock do inMemoryDb
-- **JWT tokens** - Mock do jsonwebtoken
-- **Requisições HTTP** - Mock das dependências
+```javascript
+cy.apiLogin(); // Autenticação via API
+cy.apiCreateUser(userData); // Criar usuário via API
+cy.setupTestData(); // Preparar dados de teste
+cy.validateUserResponse(); // Validar schema JSON
+```
 
 ### Exemplos de Teste
 
@@ -187,63 +166,76 @@ O projeto utiliza mocks para:
 
 ```javascript
 describe("POST /users", () => {
-  it("should create user with valid data", async () => {
-    const userData = {
-      name: "Test User",
-      email: "test@example.com",
-      password: "password123",
-      type: "standard",
-    };
-
-    const response = await request(app)
-      .post("/users")
-      .set("Authorization", `Bearer ${validToken}`)
-      .send(userData)
-      .expect(201);
-
-    expect(response.body.user.name).toBe("Test User");
+  it("should create user with valid data", () => {
+    cy.apiLogin();
+    cy.request({
+      method: "POST",
+      url: "/users",
+      headers: {
+        Authorization: `Bearer ${Cypress.env("token")}`,
+      },
+      body: {
+        name: "Test User",
+        email: "test@example.com",
+        password: "password123",
+        type: "standard",
+      },
+    }).then((response) => {
+      expect(response.status).to.eq(201);
+      expect(response.body.user.name).to.eq("Test User");
+    });
   });
 });
 ```
 
-#### Teste de Serviço
+#### Teste de Validação
 
 ```javascript
-describe("UserService", () => {
-  it("should validate email uniqueness", async () => {
-    const userData = { email: "existing@example.com" };
-
-    await expect(userService.createUser(userData)).rejects.toThrow(
-      "Email already exists"
-    );
+describe("POST /users", () => {
+  it("should validate required fields", () => {
+    cy.apiLogin();
+    cy.request({
+      method: "POST",
+      url: "/users",
+      headers: {
+        Authorization: `Bearer ${Cypress.env("token")}`,
+      },
+      body: {
+        name: "",
+        email: "invalid-email",
+        password: "123",
+        type: "standard",
+      },
+      failOnStatusCode: false,
+    }).then((response) => {
+      expect(response.status).to.eq(400);
+      expect(response.body).to.have.property("errors");
+    });
   });
 });
 ```
 
 ### Debugging de Testes
 
-Para debugar testes individuais:
+Para debugar testes:
 
 ```bash
-# Executar teste específico
-npm test -- --testNamePattern="should create user"
+# Abrir Cypress UI
+npm run test:open
 
-# Executar arquivo específico
-npm test userController.test.js
-
-# Modo verbose para mais detalhes
-npm test -- --verbose
+# Executar testes em modo headless com logs
+npm test -- --headed --no-exit
 ```
 
 ### Boas Práticas Implementadas
 
 - ✅ **Isolamento**: Cada teste é independente
-- ✅ **Mocks**: Dependências externas são mockadas
-- ✅ **Cleanup**: Estado limpo entre testes
+- ✅ **Cleanup**: Limpeza automática entre testes
 - ✅ **Nomes descritivos**: Testes claros e específicos
 - ✅ **AAA Pattern**: Arrange, Act, Assert
 - ✅ **Edge cases**: Testes de cenários limite
 - ✅ **Error handling**: Testes de tratamento de erros
+- ✅ **Meaningful assertions**: Verificações específicas e claras
 
 ## 🏗 Estrutura do Projeto
 
@@ -561,32 +553,12 @@ npm ci --only=production
 npm start
 ```
 
-### Plataformas de Deploy
-
-- **Heroku**: Com Procfile
-- **AWS EC2**: Com PM2
-- **Docker**: Dockerfile disponível
-- **Vercel/Netlify**: Para serverless functions
-
 ## 📈 Melhorias Futuras
 
 - [ ] Implementar banco de dados real (PostgreSQL/MongoDB)
 - [ ] Adicionar paginação nos endpoints de listagem
-- [ ] Implementar rate limiting
-- [ ] Adicionar refresh tokens
 - [ ] Implementar verificação de email
 - [ ] Adicionar recuperação de senha
 - [ ] Implementar upload de avatar
 - [ ] Adicionar logs estruturados
-- [ ] Implementar testes unitários e de integração
-- [ ] Adicionar WebSockets para real-time
-- [ ] Implementar cache com Redis
 - [ ] Adicionar métricas e monitoramento
-
-## 📞 Suporte
-
-Para dúvidas ou problemas, entre em contato com a equipe de desenvolvimento.
-
----
-
-**Desenvolvido com ❤️ para o Sistema de Gerenciamento de Usuários SPS**
